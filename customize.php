@@ -19,7 +19,7 @@ function appeal_register_theme_customizer($wp_customize)
     // (2)
     $wp_customize->add_section( 'appeal_custom_teaser_length_section', array(
             'title'             => __( 'Pullquote Teaser', 'appeal' ),
-            'capability'        => 'edit_themes_options',
+            'capability'        => 'edit_theme_options',
             'priority'          => 30
         ) );
 
