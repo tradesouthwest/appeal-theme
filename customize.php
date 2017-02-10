@@ -14,14 +14,11 @@
 
 function appeal_register_theme_customizer($wp_customize)
 {
-    // (1) using default colors section
 
-    // (2)
-    $wp_customize->add_section( 'appeal_custom_teaser_length_section', array(
-            'title'             => __( 'Pullquote Teaser', 'appeal' ),
-            'capability'        => 'edit_theme_options',
-            'priority'          => 30
-        ) );
+    $wp_customize->add_section('appeal_custom_teaser_length_section', array(
+            'title'             => 'Teaser Length',
+            'priority'          => 45
+        ));
 
     /* (1)
      * WP_Customize_Manager/add_setting for header background color
@@ -63,14 +60,15 @@ function appeal_register_theme_customizer($wp_customize)
     // (2)
     $wp_customize->add_control(
         'appeal_custom_theme_teaser_length', array(
-            'type'              => 'range',
+            'settings'          => 'appeal_custom_teaser_length_setting',
+            'type'              => 'number',
             'section'           => 'appeal_custom_teaser_length_section',
             'label'             => __( 'Set Number of Words' ),
             'description'       => __( 'Set how many words display on the pullquote.' ),
+
             'input_attrs' => array(
-                'min' => 0,
-                'max' => 100,
-                'step' => 1,
+                'min' => 1,
+                'max' => 40,
             ),
         )
     );
@@ -110,10 +108,25 @@ add_action( 'wp_head', 'appeal_customizer_css');
 
 
 /**
+ * Writes the teaser_length to the_excerpt
+ * by reading the value(s) from the theme mod value in the options table.
+ */
+function appeal_teaser_length()
+{
+    if ( get_theme_mods( ) ) {
+        $length = get_theme_mod( 'appeal_custom_teaser_length_setting', '12' );
+        $content = wp_strip_all_tags(get_the_excerpt() , true );
+            echo wp_trim_words( $content, $length );
+    }
+}
+add_filter( 'the_excerpt', 'appeal_teaser_length' );
+
+
+/**
  * Registers the Theme Customizer Preview JavaScript with WordPress.
  *
  * @package    tmx
-
+ */
 function appeal_customizer_live_preview() {
 	wp_enqueue_script(
 		'appeal-theme-customizer',
@@ -124,4 +137,3 @@ function appeal_customizer_live_preview() {
 	);
 }
 add_action( 'customize_preview_init', 'appeal_customizer_live_preview' );
- */
