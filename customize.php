@@ -38,7 +38,7 @@ function appeal_register_theme_customizer($wp_customize)
             'type'              => 'theme_mod',
             'default'           => 22,
 			'sanitize_callback'	=> 'appeal_sanitize_number_absint',
-			'transport'			=> 'postMessage'
+			'transport'			=> 'refresh'
 		)
 	);
 
