@@ -145,6 +145,17 @@ $GLOBALS['content_width'] = 750;
 add_action( 'after_setup_theme', 'appeal_content_width', 0 );
 
 /**
+ * page excerpt support
+ * @init
+ * @add_post_type_support
+ */
+function appeal_theme_excerpt_support()
+{
+    add_post_type_support( 'page', 'excerpt' );
+}
+add_action( 'init', 'appeal_theme_excerpt_support' );
+
+/**
  * support for logo upload, output
  */
 function appeal_theme_custom_logo() {
@@ -164,28 +175,28 @@ function appeal_theme_custom_logo() {
     echo $output;
 }
 
-
-/**
- * page excerpt support
- * @init
- * @add_post_type_support
- */
-function appeal_theme_excerpt_support()
-{
-    add_post_type_support( 'page', 'excerpt' );
+/** Custom usage of more_tag to split content in two.
+ * @only works on template Two Part Content
+ * @uses more tag to split content "<!--more-->"
+ * @only works for two columns
+  */
+function appeal_split_content() {
+if( is_page()) {
+    global $more;
+    $more = true;
+    $content = preg_split('/<span id="more-\d+"><\/span>/i', get_the_content('more'));
+    for($c = 0, $csize = count($content); $c < $csize; $c++) {
+        $content[$c] = apply_filters('the_content', $content[$c]);
+    }
+    return $content;
+    }
 }
-add_action( 'init', 'appeal_theme_excerpt_support' );
-
-
-//check keyboard for compatibility
-remove_filter( 'the_content', 'wptexturize' );
 
 //modify the read more tag
 function appeal_theme_modify_read_more_link() {
     return '<a class="more-link" href="' . get_permalink() . '">[ + ]</a>';
 }
 add_filter( 'the_content_more_link', 'appeal_theme_modify_read_more_link' );
-
 
 //remove ellipsis
 function appeal_custom_excerpt_more() {
@@ -197,6 +208,8 @@ function appeal_custom_excerpt_more() {
 }
 add_filter('excerpt_more', 'appeal_custom_excerpt_more');
 
+//check keyboard for compatibility
+remove_filter( 'the_content', 'wptexturize' );
 
 /**
  * Implementation of the Custom Header feature.
@@ -323,7 +336,6 @@ function appeal_register_sidebars() {
 }
 add_action( 'widgets_init', 'appeal_register_sidebars' );
 
-
 /**
  * Header for singular articles
  * Add pingback url auto-discovery header for singular articles.
@@ -339,6 +351,32 @@ function appeal_pingback_header() {
 }
 add_action( 'wp_head', 'appeal_pingback_header' );
 endif;
+
+/**woo weady
+ * Removes woo wrappers and replace with this theme's content
+ * wrappers so that woo content fits in this theme.
+ * @https://docs.woocommerce.com/document/third-party-custom-theme-compatibility/
+*/
+add_action( 'after_setup_theme', 'appeal_woocommerce_support' );
+function appeal_woocommerce_support() {
+    add_theme_support( 'woocommerce' );
+}
+remove_action( 'woocommerce_before_main_content',
+               'woocommerce_output_content_wrapper', 10);
+remove_action( 'woocommerce_after_main_content',
+               'woocommerce_output_content_wrapper_end', 10);
+add_action(    'woocommerce_before_main_content',
+               'appeal_theme_wrapper_start', 10);
+add_action(    'woocommerce_after_main_content',
+               'appeal_theme_wrapper_end', 10);
+
+function appeal_theme_wrapper_start() {
+    echo '<div id="content-woo">';
+}
+
+function appeal_theme_wrapper_end() {
+    echo '</div>';
+}
 
 // Register Custom Navigation Walker
 require_once get_template_directory() . '/assets/wp_bootstrap_navwalker.php';
