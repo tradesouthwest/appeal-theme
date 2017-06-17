@@ -70,7 +70,7 @@ function appeal_display_options_page() {
 ?>
 
 <div class="wrap">
-    <h1><div id="icon-info" class="dashicons dashicons-dashboard"></div>
+    <h1><div id="icon-info" class="dashicons dashicons-welcome-learn-more"></div>
     <?php esc_html_e( 'Appeal theme page', 'appeal' ); ?></h1>
 
         <h3>General Overview of Theme Settings</h3>
