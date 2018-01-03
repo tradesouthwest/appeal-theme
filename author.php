@@ -17,27 +17,18 @@
                     <li class="list-group-item">
                         <?php the_author_meta('description'); ?></li>
                     <li class="list-group-item">
-                        <?php _e( 'Archives for ', 'appeal' );
+                        <?php esc_html_e( 'Archives for ', 'appeal' );
                               the_author_posts_link(); ?></li>
                     <li class="list-group-item"><b><?php the_author_posts(); ?></b>
-                    <?php _e( 'Articles by ', 'appeal' ); ?> <?php the_author(); ?></li>
+                    <?php esc_html_e( 'Articles by ', 'appeal' ); ?> <?php the_author(); ?></li>
                     <li class="list-group-item">
                     <?php echo esc_url(the_author_meta('email')); ?></li>
                     </ul>
                     <div class="author-footer">
-                        <nav class="modal-nav">
-                        <?php if ( has_nav_menu( 'author_modal' ) ) {
-                                    wp_nav_menu( array(
-                                'menu'               => 'author_modal',
-                                'theme_location'    => 'author_modal',
-                                'container'        => 'ul',
-                                'container_class' => 'list-inline',
-                                'container_id'   => 'modalLinkA',
-                                'menu_class'    => 'nav navbar-nav',
-                                'fallback_cb' => 'wp_nav_menu',
-                                ));
-                             } ?>
-                        </nav>
+                        <em class="text-muted"><?php esc_html_e( 'E-Mail: ', 'appeal' ); ?>
+                            <?php echo esc_html( the_author_meta('user_email') ); ?></em>
+                        <span class="screen-reader-text">
+                        <?php esc_html_e( 'email link text to author', 'appeal' ); ?></span>
                     </div>
                 </aside><div class="clearfix"></div>
 
@@ -53,17 +44,8 @@
                 title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a></h3>
 
 		    <section class="post_content">
-            <?php
-            $length          = appeal_custom_posts_excerpt_length();
-            $appealmore      = appeal_custom_excerpt_more();
-            $content         = get_the_content();
-            $trimmed_content = wp_trim_words( $content, $length, $appealmore );
 
-            echo '<p>'.$trimmed_content.'</p>'; ?>
-
-                    <nav class="pagination"><?php // more tag display
-                    wp_link_pages();
-                    ?></nav>
+                <?php the_excerpt() ?>
 
             </section><div class="clearfix"></div>
                 <footer class="meta-footer">
