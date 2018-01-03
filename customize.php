@@ -18,52 +18,82 @@ function appeal_register_theme_customizer($wp_customize)
             'title'             => __( 'Appeal Theme Controls', 'appeal' ),
             'priority'          => 45
         ));
-
-    /* (1)
+    $wp_customize->add_setting(
+		// $id
+		'appeal_header_background_image_repeat_setting',
+		// $args
+		array(
+			'default'			=> false,
+			'sanitize_callback'	=> 'appeal_sanitize_checkbox',
+			'transport'			=> 'refresh'
+		)
+    );
+    $wp_customize->add_setting(
+		// $id
+		'appeal_header_background_image_size_setting',
+		// $args
+		array(
+			'default'			=> true,
+			'sanitize_callback'	=> 'appeal_sanitize_checkbox',
+			'transport'			=> 'refresh'
+		)
+);
+    /** (1)
      * WP_Customize_ /add_setting for header background color
     */
 	$wp_customize->add_setting(	'appeal_header_background_color_setting', array(
             'type'              => 'theme_mod',
-            'default'           => 'f7f7f7',
+            'default'           => '#f7f7f7',
 			'sanitize_callback'	=> 'sanitize_hex_color',
 			'transport'			=> 'refresh'
 		)
 	);
 
-    /* (2)
+    /** (2)
      * WP_Customize_ /add_setting for content background color
     */
 	$wp_customize->add_setting(	'appeal_page_background_color_setting', array(
             'type'              => 'theme_mod',
-            'default'           => 'ffffff',
+            'default'           => '#ffffff',
 			'sanitize_callback'	=> 'sanitize_hex_color',
 			'transport'			=> 'refresh'
 		)
 	);
 
-    /* (3)
+    /** (3)anchor links color
      * WP_Customize_ /add_setting for anchor link color
     */
 	$wp_customize->add_setting(	'appeal_anchor_links_color_setting', array(
             'type'              => 'theme_mod',
-            'default'           => '33679d',
+            'default'           => '#33679d',
 			'sanitize_callback'	=> 'sanitize_hex_color',
 			'transport'			=> 'refresh'
 		)
 	);
 
-    /* (4)
-     * WP_Customize_ /add_setting for pullquote teaser words
+	/** (3A)appeal_pullquote_text_color
+     * WP_Customize_ /add_setting for anchor link color
     */
-	$wp_customize->add_setting(	'appeal_custom_teaser_length_setting', array(
+    $wp_customize->add_setting( 'appeal_pullquote_text_color_setting', array(
             'type'              => 'theme_mod',
-            'default'           => 22,
-			'sanitize_callback'	=> 'appeal_sanitize_number_absint',
+            'default'           => '#356767',
+            'sanitize_callback' => 'sanitize_hex_color',
+            'transport'         => 'refresh'
+        )
+    );
+
+    /** (4)
+     * WP_Customize_ /add_setting for pullquote teaser usage
+    */
+	$wp_customize->add_setting(	'appeal_custom_teaser_usage_setting', array(
+            'type'              => 'theme_mod',
+            'default'           => 'none',
+			'sanitize_callback'	=> 'sanitize_text_field',
 			'transport'			=> 'refresh'
 		)
 	);
 
-    /* (5)
+    /** (5)
      * WP_Customize_ /add_setting for pullquote teaser width
     */
 	$wp_customize->add_setting(	'appeal_custom_teaser_width_setting', array(
@@ -74,7 +104,7 @@ function appeal_register_theme_customizer($wp_customize)
 		)
 	);
 
-    /* (6)
+    /** (6)
      * WP_Customize_ /add_setting for post excerpt words
     */
 	$wp_customize->add_setting(	'appeal_posts_excerpt_length_setting', array(
@@ -85,7 +115,7 @@ function appeal_register_theme_customizer($wp_customize)
 		)
 	);
 
-    /* (7)
+    /** (7)
      * WP_Customize_ /add_setting for title visibility
     */
 	$wp_customize->add_setting(	'appeal_title_visible_setting', array(
@@ -96,7 +126,7 @@ function appeal_register_theme_customizer($wp_customize)
 		)
 	);
 
-    /* (8)
+    /** (8)
      * WP_Customize_ /add_setting for post header link
     */
 	$wp_customize->add_setting(	'appeal_titlelink_color_setting', array(
@@ -107,7 +137,77 @@ function appeal_register_theme_customizer($wp_customize)
 		)
 	);
 
-    /* (9)
+    /** (9)
+     * WP_Customize_ /add_setting for sidebar-top image
+     * Raw image to output on advert box.
+     * @since 1.0.7
+    */
+    $wp_customize->add_setting( 'appeal_topbox_image_setting', array(
+            'type'              => 'theme_mod',
+            'default'           => '',
+            'capability'        => 'manage_options',
+            'sanitize_callback' => 'sanitize_text_field',
+        )
+    );
+
+    /** (10)
+     * WP_Customize_ /add_setting for border around sidebars
+     * @since 1.0.7
+    */
+	$wp_customize->add_setting(	'appeal_sidebar_border_setting', array(
+            'type'              => 'theme_mod',
+            'default'           => 'none',
+			'sanitize_callback'	=> 'sanitize_text_field',
+			'transport'			=> 'refresh'
+		)
+	);
+	
+	/** (11)
+     * WP_Customize_ /add_setting for offscreen sidebar button text
+     * @since 1.0.7
+    */
+	$wp_customize->add_setting(	'appeal_sidebar_text_setting', array(
+            'type'              => 'theme_mod',
+            'default'           => ' + ',
+			'sanitize_callback'	=> 'sanitize_text_field'
+		)
+	);
+	
+    /** (12)
+     * WP_Customize_ /add_setting for readon text
+     * @since 1.1.8
+    */
+	$wp_customize->add_setting(	'appeal_readon_text_setting', array(
+            'type'              => 'theme_mod',
+            'default'           => __( 'Read Article', 'appeal' ),
+			'sanitize_callback'	=> 'sanitize_text_field'
+		)
+	);
+
+	/** (13)
+     * WP_Customize_ /add_setting for copyright text
+     * @since 1.1.9
+    */
+	$wp_customize->add_setting(	'appeal_copyright_text_setting', array(
+            'type'              => 'theme_mod',
+            'default'           => '',
+			'sanitize_callback'	=> 'sanitize_text_field'
+		)
+	);
+	
+	/** (14)
+     * WP_Customize_ /add_setting for use mobile nav or not
+     * @since 1.1.0
+    */
+	$wp_customize->add_setting(	'appeal_nav_walker_mobi_setting', array(
+            'type'              => 'theme_mod',
+            'default'           => '0',
+			'sanitize_callback'	=> 'appeal_sanitize_number_absint',
+			'transport'			=> 'refresh'
+		)
+	);
+	
+    /** (15)
      * WP_Customize_ /add_setting for theme instructions
     */
 	$wp_customize->add_setting(	'appeal_theme_instructions_setting', array(
@@ -118,6 +218,32 @@ function appeal_register_theme_customizer($wp_customize)
 	);
 
 //-----------------Controls-----------------------------------
+    $wp_customize->add_control(
+		// $id
+		'appeal_header_background_image_repeat',
+		// $args
+		array(
+			'settings'		=> 'appeal_header_background_image_repeat_setting',
+			'section'		=> 'header_image',
+			'type'			=> 'checkbox',
+			'label'			=> __( 'Background Repeat', 'appeal' ),
+			'description'	=> __( 'Should the header background image repeat?', 'appeal' ),
+		)
+	);
+
+    $wp_customize->add_control(
+		// $id
+		'appeal_header_background_image_size',
+		// $args
+		array(
+			'settings'		=> 'appeal_header_background_image_size_setting',
+			'section'		=> 'header_image',
+			'type'			=> 'checkbox',
+			'label'			=> __( 'Background Stretch', 'appeal' ),
+			'description'	=> __( 'Should the header background image stretch in full?', 
+			                       'appeal' ),
+		)
+	);
 
     // (1) Header and Footer background color
     $wp_customize->add_control(
@@ -135,7 +261,7 @@ function appeal_register_theme_customizer($wp_customize)
 		)
     );
 
-    // (2)
+    // (2) WP page background color
     $wp_customize->add_control(
 		new WP_Customize_Color_Control(
 			$wp_customize,
@@ -149,7 +275,7 @@ function appeal_register_theme_customizer($wp_customize)
 		)
     );
 
-    // (3) Header and Footer background color
+    // (3) Anchor links color
     $wp_customize->add_control(
 		new WP_Customize_Color_Control(
 			$wp_customize,
@@ -164,18 +290,33 @@ function appeal_register_theme_customizer($wp_customize)
 		)
     );
 
-    // (4) Teaser word count length
+    // (3A) Pullquote word color
     $wp_customize->add_control(
-        'appeal_custom_teaser_length', array(
-            'settings'          => 'appeal_custom_teaser_length_setting',
-            'type'              => 'number',
+        new WP_Customize_Color_Control(
+            $wp_customize,
+            'appeal_pullquote_text_color', array(
+                'settings'      => 'appeal_pullquote_text_color_setting',
+                'section'       => 'colors',
+                'priority'          => 1,
+                'label'         => __( 'PullQuote Text Color', 'appeal' ),
+                'description'   => __(
+                    'Select the color for pullquote excerpt on articles.', 'appeal' ),
+            )
+        )
+    );
+
+    /** (4) Teaser use or not use
+     * @since 1.0.7 
+     */
+    $wp_customize->add_control(
+        'appeal_custom_teaser_usage', array(
+            'settings'          => 'appeal_custom_teaser_usage_setting',
             'section'           => 'appeal_custom_teaser_length_section',
-            'label'             => __( 'PullQuote Number of Words', 'appeal' ),
-            'description'       => __( 'Set how many words display on the pullquote.',
-                                       'appeal' ),
-            'input_attrs' => array(
-                'min' => 0,
-                'max' => 55,
+            'label'             => __( 'PullQuote Replaces Excerpt', 'appeal' ),
+            'type'              => 'select',
+            'choices'   => array(
+                'block' => __( 'Use Excerpt as Pullquote', 'appeal' ),
+                'none'  => __( 'Use default excerpt', 'appeal' ),
             ),
         )
     );
@@ -187,24 +328,21 @@ function appeal_register_theme_customizer($wp_customize)
             'type'              => 'number',
             'section'           => 'appeal_custom_teaser_length_section',
             'label'             => __( 'Set Pullquote Width', 'appeal' ),
-            'description'       => __( 'This sets how wide the Teaser will be.
-                                        Height is automatic.', 'appeal' ),
+            'description'       => __( 'This sets how wide the Teaser will be.', 'appeal' ),
             'input_attrs' => array(
                 'min' => 0,
                 'max' => 540,
             ),
         )
     );
-
+    
     // (6) posts excerpt length control
     $wp_customize->add_control(
         'appeal_posts_excerpt_length', array(
             'settings'          => 'appeal_posts_excerpt_length_setting',
             'type'              => 'number',
             'section'           => 'appeal_custom_teaser_length_section',
-            'label'             => __( 'Set Posts Excerpt Length', 'appeal' ),
-            'description'       => __( 'This sets excertps for POSTS ONLY.',
-                                       'appeal' ),
+            'label'             => __( 'Set POSTS ONLY Excerpt Length', 'appeal' ),
             'input_attrs' => array(
                 'min' => 0,
                 'max' => 385,
@@ -215,16 +353,13 @@ function appeal_register_theme_customizer($wp_customize)
     // (7)
     $wp_customize->add_control(
         'appeal_title_visible_toposts', array(
-        'settings' => 'appeal_title_visible_setting',
-        'label'   => __( 'Title Visible only on: ', 'appeal' ),
-        'description' => __( 'does not apply to archives etc', 'appeal' ),
-        'section' => 'appeal_custom_teaser_length_section',
-        'type'    => 'select',
-        'choices'    => array(
+        'settings'  => 'appeal_title_visible_setting',
+        'label'     => __( 'Title Visible only on: ', 'appeal' ),
+        'section'   => 'appeal_custom_teaser_length_section',
+        'type'      => 'select',
+        'choices'   => array(
             'atvt1' => __( 'Posts and Pages', 'appeal' ),
-            'atvt2' => __( 'Posts Only', 'appeal' ),
-            'atvt3' => __( 'Pages Only', 'appeal' ),
-            'atvt4' => __( 'Only HomePage Blog &amp; Single Posts', 'appeal' ),
+            'atvt2' => __( 'Posts Only - Not Pages', 'appeal' ),
         ),
     ));
 
@@ -246,18 +381,89 @@ function appeal_register_theme_customizer($wp_customize)
 
     // (9)
     $wp_customize->add_control(
+    new WP_Customize_Image_Control(
+    $wp_customize,
+    'appeal_topbox_image', array(
+            'settings'          => 'appeal_topbox_image_setting',
+            'section'           => 'appeal_custom_teaser_length_section',
+            'label'             => __( 'Upload Image to Top Advert Box', 'appeal' ),
+            'description'       => __( 'Upload will override any widgets.', 'appeal' ),
+        )
+    ));
+
+    // (10)
+    $wp_customize->add_control(
+        'appeal_sidebar_border', array(
+        'settings' => 'appeal_sidebar_border_setting',
+        'label'    => __( 'Choose border style on sidebars.', 'appeal' ),
+        'section'  => 'appeal_custom_teaser_length_section',
+        'type'     => 'select',
+        'choices'  => array(
+            'none' => __( 'No borders', 'appeal' ),
+            'thin solid rgba( 240, 240, 240, .9)'   => __( 'Show borders', 'appeal' ),
+            'thin solid rgba( 240, 240, 240, .9); box-shadow: 4px 2px 3px -2px rgba(0, 0, 0, .22)'
+             => __('Show borders and Box-Shadow', 'appeal' ), 
+        ),
+    ));
+    
+    // (11)
+    $wp_customize->add_control(
+        'appeal_sidebar_text', array(
+            'settings'          => 'appeal_sidebar_text_setting',
+            'type'              => 'text',
+            'section'           => 'appeal_custom_teaser_length_section',
+            'label'       => __( 'Wording for View Sidebar button', 'appeal' ),
+        )
+    );
+    
+    // (12)
+    $wp_customize->add_control(
+        'appeal_readon_text', array(
+            'settings'          => 'appeal_readon_text_setting',
+            'type'              => 'text',
+            'section'           => 'appeal_custom_teaser_length_section',
+            'label'       => __( 'Wording for Read More button', 'appeal' ),
+        )
+    );
+    
+    // (12)
+    $wp_customize->add_control(
+        'appeal_copyright_text', array(
+            'settings'          => 'appeal_copyright_text_setting',
+            'type'              => 'text',
+            'section'           => 'appeal_custom_teaser_length_section',
+            'label'       => __( 'Replace Footer Copyright with Text', 'appeal' ),
+        )
+    );
+    
+    /** (13) Mobile Nav @use or not use
+     * @since 1.0.7 
+     */
+    $wp_customize->add_control(
+        'appeal_nav_walker_mobi', array(
+            'settings'          => 'appeal_nav_walker_mobi_setting',
+            'section'           => 'appeal_custom_teaser_length_section',
+            'label'             => __( 'Mobile Navigation Preference', 'appeal' ),
+            'type'              => 'select',
+            'choices'   => array(
+                '0' => __( 'Leave Top Menu Item Selectable', 'appeal' ),
+                '1'  => __( 'Use Mobile Nav (top tap only)', 'appeal' ),
+            ),
+        )
+    );
+    
+    // (14)
+    $wp_customize->add_control(
         'appeal_theme_instructions', array(
             'settings'          => 'appeal_theme_instructions_setting',
             'type'              => 'hidden',
             'section'           => 'appeal_custom_teaser_length_section',
-            'label'             => __( 'Further Theme Instructions', 'appeal' ),
-            'description'       => _x( '<p style="background:azure"> By hiding titles of posts/pages, your titles can be added from your <b>Editor</b> to give better SEO URLs and puts title where you want it in the article. (Use h1, h2, h3. h3 is pre styled [best choice].) <b>The Editor Title box will be the page name.</b> This is required.</p><hr><p style="background:seashell">To set up social or company media links in the page footer---and the popup---use the Menu settings <b>Appearance > Menus</b>. Then create your links using the <u>Custom Links</u> panel to left of Menu Structure panel. Save accordingly.</p><hr><b>Other notes: </b><p style="background:honeydew">Author Links are taken from the User Profile. Be creative by replacing user profile website field with a social link.<br>To fashion the advert boxes you can use the editor to create a post and then copy the code from that post into a text-widget. (Remember to make post private) TSW=|=</p>', 'appeal' ),
+            'description'       => __( 'Instructions: <b>Appearance > Theme Options</b>', 'appeal' ),
         )
     );
 
 }
-add_action('customize_register', 'appeal_register_theme_customizer');
-
+add_action( 'customize_register', 'appeal_register_theme_customizer' );
 
 
 //sanitizer for integer
@@ -267,6 +473,11 @@ function appeal_sanitize_number_absint( $number, $setting ) {
 
   // If the input is an absolute integer, return it; otherwise, return the default
   return ( $number ? $number : $setting->default );
+}
+//sanitize for checkbox
+function appeal_sanitize_checkbox( $checked ) {
+	// Boolean check.
+	return ( ( isset( $checked ) && true == $checked ) ? true : false );
 }
 
 
@@ -279,49 +490,46 @@ function appeal_customizer_css() {
     if ( get_theme_mods() )
     :
     echo '<style type="text/css">';
-
+        
         if ( get_theme_mod( 'appeal_header_background_color_setting' ) ) :
              $appealheader = get_theme_mod( 'appeal_header_background_color_setting');
-             echo '.site-head, .footer-footer, #sidebar-right, #sidebar-left{
-                    background: ' . $appealheader . ';} .commentlist, article.sticky .content-header{border-color: ' . $appealheader . ';}';
+             echo '.site-head, .footer-footer, #sidebar-right, #sidebar-left{background: ' . esc_attr( $appealheader ) . ';} .commentlist, article.sticky .content-header{border-color: ' . esc_attr( $appealheader ) . ';}';
         endif;
-
+				     
         if ( get_theme_mod( 'appeal_page_background_color_setting' ) ) :
              $appealpage = get_theme_mod( 'appeal_page_background_color_setting');
-             echo '#content {background: ' . $appealpage . ';}';
+             echo '#content {background: ' . esc_attr( $appealpage ) . ';}';
         endif;
-
+        
         if ( get_theme_mod( 'appeal_anchor_links_color_setting' ) ) :
              $appeallink = get_theme_mod( 'appeal_anchor_links_color_setting');
-             echo 'a, a:link, #inner-footer a {color: ' . $appeallink . ';}';
+             echo 'a, a:link, #inner-footer a {color: ' . esc_attr( $appeallink ) . ';}';
+        endif;
+
+        if ( get_theme_mod( 'appeal_pullquote_text_color_setting' ) ) :
+             $appealquote = get_theme_mod( 'appeal_pullquote_text_color_setting');
+             echo '.pullquote aside {color: ' . esc_attr( $appealquote ) . ';}';
         endif;
 
         if ( get_theme_mod( 'appeal_custom_teaser_width_setting' ) ) :
              $appealwidth = get_theme_mod( 'appeal_custom_teaser_width_setting');
-             echo '.pullquote {width: ' . $appealwidth . 'px;}';
+             echo '.pullquote {width: ' . esc_attr( $appealwidth ).'px;}';
         endif;
 
+        if ( get_theme_mod( 'appeal_topbox_image_setting' ) ) :
+             $appealtopbox = get_theme_mod( 'appeal_topbox_image_setting');
+             echo '#topbox-banner { background: url( ' . esc_attr($appealtopbox) . ' ); }';
+        endif;
+        
+        if ( get_theme_mod( 'appeal_sidebar_border_setting' ) ) :
+             $appealsidebrd = get_theme_mod( 'appeal_sidebar_border_setting', 'none');
+             echo '#sidebar-left, #sidebar-right { border: ' . esc_attr( $appealsidebrd ) .'; }';
+        endif; 
+    
     echo '</style>';
     endif;
 }
 add_action( 'wp_head', 'appeal_customizer_css');
-
-
-/** (4)
- * Writes the teaser_length to the_excerpt
- * by reading the value(s) from the theme mod value in the options table.
- */
-function appeal_teaser_length()
-{
-    if ( get_theme_mods( ) ) {
-        $page = get_post();
-        $the_excerpt = $page->post_excerpt;
-        $length = get_theme_mod( 'appeal_custom_teaser_length_setting', '12' );
-        $content = wp_strip_all_tags( $the_excerpt , true );
-            return wp_trim_words( $content, $length );
-    }
-}
-add_filter( 'the_excerpt', 'appeal_teaser_length' );
 
 
 /** (6)
@@ -330,18 +538,14 @@ add_filter( 'the_excerpt', 'appeal_teaser_length' );
  * integer value
 */
 function appeal_custom_posts_excerpt_length()
-{
+{ 
+    if( !is_admin()) : 
     if ( get_theme_mods( ) ) {
         $length = get_theme_mod( 'appeal_posts_excerpt_length_setting', 60 );
-        return $length;
+        return esc_attr( $length );
     }
+    endif;
 }
+add_filter( 'excerpt_length', 'appeal_custom_posts_excerpt_length' );
 
-function appeal_title_visible()
-{
-    if ( get_theme_mods( ) ) {
-        $hgroup = get_theme_mod( 'appeal_title_visible_setting', 'atvt1' );
-        return $hgroup;
-    }
-}
 ?>
