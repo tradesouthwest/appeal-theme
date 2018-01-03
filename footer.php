@@ -1,27 +1,39 @@
- 
+
             </div><!-- ends from tag #page-content (below nav/header) -->
         </div><!-- .container -->
 
-<div class="container">
-<div class="row">
-<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 bottombox">
-<?php get_sidebar( 'bottom' ); ?>
-</div></div>
-</div>
+
+            <?php if( is_active_sidebar( 'sidebar-bottom' ) ) : ?>
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 bottombox">
+    
+                        <?php get_sidebar( 'bottom' ); ?>
+    
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
 
     </div><!-- .content-wrapper -->
-            <footer class="footer-footer container-fluid">
-        <nav class="social-footer">
-            <?php if ( has_nav_menu( 'author_modal' ) ) {
+        <footer class="footer-footer container-fluid">
+            <?php if ( has_nav_menu( 'above_footer' ) ) : ?>
+            
+           
+            <div id="socialContainer">
+            <nav class="social-footer">
+                    <?php
                     wp_nav_menu( array(
-                    'menu'               => 'author_modal',
-                    'theme_location'    => 'author_modal',
-                    'container'        => 'ul',
-                    'container_class' => 'list-inline',
-                    'container_id'   => 'modalLinkA',
-                    'menu_class'    => 'nav navbar-nav'));
-             } ?>
-        </nav>
+                    'theme_location' => 'above_footer',
+                    'container'     => 'ul',
+                    'depth'        => 1,
+                    'fallback_cb' => '__return_false',
+                    'menu_class' => 'nav navbar-nav'));
+                    ?>
+            </nav>
+            </div>
+            
+            <?php endif; ?>
                 <div id="inner-footer">
 
                     <div class="row">
@@ -70,17 +82,24 @@
                             </div>
 
                             <div class="col-sx-12 col-md-4">
+                            <?php  if ( get_theme_mods() ) { 
+                            $appeal_copyright = get_theme_mod( 'appeal_copyright_text_setting' );
+                            if( $appeal_copyright != '' ) { ?><p><?php 
+                            echo esc_html( $appeal_copyright ); ?></p>
+                            <?php } else { ?>
                                 <p class="text-muted"><?php
-                                $year   = esc_attr( date( 'Y' ) );
-                                printf( esc_attr__( 'Copyright %s ', 'appeal' ), $year );
-                                esc_attr( bloginfo( 'name' ) ); ?></p>
+                                $year  = date_i18n(__( 'Y', 'appeal' ));
+                                esc_html_e( 'Copyright ', 'appeal' ); 
+                                echo esc_attr( ' ' . $year . ' ' );
+                                printf( esc_attr( bloginfo( 'name' ) ) ); ?></p>
+                            <?php } } ?>    
                             </div>
 
                             <div class="col-sx-12 col-md-4">
                                 <p><a href="#"
                                       title="^"
                                       class="btn btn-default">
-                                      <?php esc_html_e("Top/Pg.", "appeal"); ?></a></p>
+                                      <?php esc_attr_e("Top/Pg.", "appeal"); ?></a></p>
                             </div>
 
                         </nav>
